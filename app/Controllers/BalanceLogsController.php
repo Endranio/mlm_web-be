@@ -3,10 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
-use App\Models\WithdrawModel;
+use App\Models\BalanceLogsModel;
 use CodeIgniter\RESTful\ResourceController;
 
-class WithdrawController extends ResourceController{
+class BalanceLogsController extends ResourceController{
 
     public function withdraw($userId){
         $data = $this->request->getJSON();
@@ -16,7 +16,7 @@ class WithdrawController extends ResourceController{
         $db = \Config\Database::connect();
         $userModel = new UserModel();
 
-        $withdrawModel = new WithdrawModel();
+        $balanceLogsModel = new BalanceLogsModel();
 
         if($amount < 50000){
             return $this->fail('minimum Withdrawal Rp 50,000');
@@ -24,7 +24,7 @@ class WithdrawController extends ResourceController{
 
         $db->transStart();
 
-        $user=$userModel->find($userId);
+       
         $user = $userModel->find($userId);
 if (!$user) {
     return $this->fail('User not found');
@@ -39,10 +39,14 @@ if (!$user) {
             'saldo'=>$user['saldo']-$amount
         ]);
 
-        $withdrawModel->insert([
-        'user_id' => $userId,
-        'amount'  => $amount,
-        'status'  => 'pending',
+        $balanceLogsModel->insert([
+               'user_id' => $userId,
+               'type' => 'out',
+               'from_source' => 'withdrawal',
+               'reference_table' => 'users',
+               'reference_id' => $userId,
+               'amount'=>$amount,
+               'created_by' => $userId,
        
     ]);
         $db->transComplete();

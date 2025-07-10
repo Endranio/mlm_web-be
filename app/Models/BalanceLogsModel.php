@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class BalanceLogModel extends Model
+class BalanceLogsModel extends Model
 {
     protected $table            = 'balance_logs';
     protected $primaryKey       = 'id';

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\BalanceLogsModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class UserController extends ResourceController
@@ -91,6 +92,8 @@ if (!$user) {
             
         }
 
+        $balanceLogsModel = new BalanceLogsModel();
+
         $pairUpline = min($upline['point_left'],$upline['point_right']);
         if($pairUpline>$upline['pair_count']){
             $newPairs = $pairUpline - $upline['pair_count'];
@@ -99,7 +102,18 @@ if (!$user) {
                 'saldo' => $upline['saldo']+$bonus,
                 'pair_count' => $pairUpline
             ]);
+            $balanceLogsModel->insert([
+                'user_id' => $upline['id'],
+                'type' => 'in',
+                'from_source' => 'pairing',
+                'reference_table' => 'users',
+                'reference_id' => $userModel->getInsertID(),
+                'amount'=>$bonus,
+                'created_by' => $userModel->getInsertID(),
+            ]);
         }
+
+        
         $pairSponsor = min($sponsor['point_left'],$sponsor['point_right']);
         if($pairSponsor>$sponsor['pair_count']){
             $newPairs = $pairSponsor - $sponsor['pair_count'];
@@ -108,8 +122,18 @@ if (!$user) {
                 'saldo' => $sponsor['saldo']+$bonus,
                 'pair_count' => $pairSponsor
             ]);
+            $balanceLogsModel->insert([
+               'user_id' => $sponsor['id'],
+               'type' => 'in',
+               'from_source' => 'pairing',
+               'reference_table' => 'users',
+               'reference_id' => $userModel->getInsertID(),
+               'amount'=>$bonus,
+               'created_by' => $userModel->getInsertID(),
+           ]);
         }
        
+
         return $this->respond([
             'message'=>"Register success"
         ]);
