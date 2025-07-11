@@ -30,4 +30,5 @@ class BalanceLogsModel extends Model
     ];
 
     
+    
 }

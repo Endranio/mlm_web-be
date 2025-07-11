@@ -29,10 +29,11 @@ if (!$user) {
         
         return $this->respond([
             'message' => 'Login berhasil',
-            'user'    => [
+            'data'    => [
                 'id'       => $user['id'],
                 'username' => $user['username'],
-                'saldo'    => $user['saldo']
+                'saldo'    => $user['saldo'],
+                'created_at' => $user['created_at']
         
             ]
         ]);

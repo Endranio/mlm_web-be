@@ -8,75 +8,73 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // ===== USERS =====
-        $users = [
+        // Load database connection
+        $db = \Config\Database::connect();
+
+        // Truncate (hapus semua data)
+        $db->table('balance_logs')->truncate();
+        $db->table('users')->truncate();
+
+        // Insert user data
+        $userData = [
             [
-                'username'    => 'endra',
-                'password'    => password_hash('rahasia123', PASSWORD_DEFAULT),
+                'username'    => 'user1',
+                'pair_count'  => 3,
+                'password'    => password_hash('password1', PASSWORD_DEFAULT),
                 'sponsor_id'  => null,
                 'upline_id'   => null,
-                'position'    => null,
-                'point_left'  => 10,
-                'point_right' => 5,
-                'saldo'       => 100000,
-                'created_at'  => date('Y-m-d H:i:s'),
-                'updated_at'  => date('Y-m-d H:i:s'),
+                'position'    => 'left',
+                'point_left'  => 100,
+                'point_right' => 200,
+                'saldo'       => 50000,
             ],
             [
-                'username'    => 'admin',
-                'password'    => password_hash('admin123', PASSWORD_DEFAULT),
-                'sponsor_id'  => null,
-                'upline_id'   => null,
-                'position'    => null,
-                'point_left'  => 20,
-                'point_right' => 15,
-                'saldo'       => 500000,
-                'created_at'  => date('Y-m-d H:i:s'),
-                'updated_at'  => date('Y-m-d H:i:s'),
+                'username'    => 'user2',
+                'pair_count'  => 1,
+                'password'    => password_hash('password2', PASSWORD_DEFAULT),
+                'sponsor_id'  => 1,
+                'upline_id'   => 1,
+                'position'    => 'right',
+                'point_left'  => 50,
+                'point_right' => 150,
+                'saldo'       => 75000,
             ],
         ];
-$this->db->table('users')->truncate(); 
-        $this->db->table('users')->insertBatch($users);
 
-        // ===== PAIRING BONUS =====
-        $pairing = [
-            [
-                'user_id'     => 1,
-                'point_left'  => 10,
-                'point_right' => 10,
-                'bonus'       => 50000,
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            [
-                'user_id'     => 2,
-                'point_left'  => 5,
-                'point_right' => 5,
-                'bonus'       => 25000,
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-        ];
-$this->db->table('pairingBonus')->truncate(); 
-        $this->db->table('pairingBonus')->insertBatch($pairing);
+        $db->table('users')->insertBatch($userData);
 
-        // ===== WITHDRAW =====
-        $withdraws = [
+        // Insert balance log data
+        $balanceData = [
             [
-                'user_id'      => 1,
-                'amount'       => 20000,
-                'status'       => 'approved',
-                'requested_at' => date('Y-m-d H:i:s'),
+                'user_id'         => 1,
+                'type'            => 'credit',
+                'from_source'     => 'pairing',
+                'reference_table' => 'pairing_logs',
+                'reference_id'    => 101,
+                'amount'          => 25000,
+                'created_by'      => 1,
+                'updated_by'      => null,
+                'deleted_by'      => null,
+                'created_at'      => date('Y-m-d H:i:s'),
+                'updated_at'      => null,
+                'deleted_at'      => null,
             ],
             [
-                'user_id'      => 2,
-                'amount'       => 15000,
-                'status'       => 'pending',
-                'requested_at' => date('Y-m-d H:i:s'),
+                'user_id'         => 2,
+                'type'            => 'debit',
+                'from_source'     => 'withdraw',
+                'reference_table' => 'withdrawals',
+                'reference_id'    => 202,
+                'amount'          => 10000,
+                'created_by'      => 2,
+                'updated_by'      => null,
+                'deleted_by'      => null,
+                'created_at'      => date('Y-m-d H:i:s'),
+                'updated_at'      => null,
+                'deleted_at'      => null,
             ],
         ];
-         
 
-$this->db->table('withdraw')->truncate();       
-
-        $this->db->table('withdraw')->insertBatch($withdraws);
+        $db->table('balance_logs')->insertBatch($balanceData);
     }
 }
