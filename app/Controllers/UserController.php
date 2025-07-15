@@ -32,7 +32,6 @@ if (!$user) {
             'data'    => [
                 'id'       => $user['id'],
                 'username' => $user['username'],
-                'saldo'    => $user['saldo'],
                 'created_at' => $user['created_at']
         
             ]

@@ -98,6 +98,7 @@ if (!$user) {
             
                 'total_bonus_received' => (float)($totalBonusData['total_bonus'] ?? 0),
                 'total_withdrawn'      => (float)($totalWithdrawData['total_withdraw'] ?? 0),
+                'total_saldo'          =>($user['saldo'])
             
         ];
 
